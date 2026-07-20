@@ -1,0 +1,27 @@
+import java.util.concurrent.Semaphore;
+
+class FooBar {
+    private int n;
+    private Semaphore fooSemaphore = new Semaphore(1);
+    private Semaphore barSemaphore = new Semaphore(0);
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            fooSemaphore.acquire();  // wait for permission to print "foo"
+            printFoo.run();          // outputs "foo". Do not change or remove this line.
+            barSemaphore.release();  // signal that "bar" can go next
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        for (int i = 0; i < n; i++) {
+            barSemaphore.acquire();  // wait for permission to print "bar"
+            printBar.run();          // outputs "bar". Do not change or remove this line.
+            fooSemaphore.release();  // signal that "foo" can go next
+        }
+    }
+}
